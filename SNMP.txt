@@ -1,0 +1,97 @@
+R1
+config terminal
+int loopback 1
+ip address 1.1.1.1 255.255.255.0
+exit
+int f0/0
+ip address 192.168.4.1 255.255.255.0
+no shutdown
+exit
+int f0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+int s2/2
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+
+R2
+config terminal
+int loopback 2
+ip address 2.2.2.2 255.255.255.0
+exit
+int f0/0
+ip address 192.168.3.2 255.255.255.0
+no shutdown
+exit
+int s2/2
+ip address 192.168.2.2 255.255.255.0
+no shutdown
+exit
+
+R3
+config terminal
+int loopback 3
+ip address 3.3.3.3 255.255.255.0
+exit
+int f0/0
+ip address 192.168.3.3 255.255.255.0
+no shutdown
+exit
+int f0/1
+ip address 192.168.4.3 255.255.255.0
+no shutdown
+exit
+
+RIP R1
+config terminal
+router rip
+version 2
+network 192.168.1.0
+network 192.168.2.0
+network 192.168.4.0
+no auto-summary
+redistribute connected
+exit
+
+RIP R2
+config terminal
+router rip
+version 2
+network 192.168.3.0
+network 192.168.2.0
+no auto-summary
+redistribute connected
+exit
+
+RIP R3
+config terminal
+router rip
+version 2
+network 192.168.3.0
+network 192.168.4.0
+no auto-summary
+redistribute connected
+exit
+
+SNMP R1
+config terminal
+snmp-server community public ro
+snmp-server community private rw
+snmp-server enable traps snmp
+snmp-server host 192.168.1.2 traps version 2 public
+
+SNMP R2
+config terminal
+snmp-server community public ro
+snmp-server community private rw
+snmp-server enable traps snmp
+snmp-server host 192.168.1.2 traps version 2 public
+
+SNMP R3
+config terminal
+snmp-server community public ro
+snmp-server community private rw
+snmp-server enable traps snmp
+snmp-server host 192.168.1.2 traps version 2 public
